@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Góc nhìn Quốc tế & Nhận định - 1954-1975</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Lora:ital,wght@0,400;0,600;1,400&family=Be+Vietnam+Pro:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        /* === RESET & CHUNG === */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root { --blood-red: #8b0000; --blood-red-light: #b71c1c; --gold: #ffd700; }
+        body { background-color: #f4ebd8; color: #2b2b2b; font-family: 'Lora', serif; overflow-x: hidden; }
+        
+        body::before { content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-image: url('https://www.transparenttextures.com/patterns/rice-paper-2.png'); opacity: 0.8; z-index: 998; pointer-events: none; }
+
+        /* HEADER */
+        header { background-color: rgba(139, 0, 0, 0.95); padding: 15px 0; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.3); }
+        .nav-container { max-width: 1100px; margin: 0 auto; display: flex; justify-content: center; gap: 30px; }
+        .nav-container a { color: #f4ebd8; text-decoration: none; font-family: 'Be Vietnam Pro', sans-serif; font-weight: 700; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 1px; transition: 0.3s; }
+        .nav-container a:hover { color: #fff; text-shadow: 0 0 8px rgba(255,255,255,0.5); }
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        .section-title { text-align: center; margin-bottom: 60px; }
+        .section-title h1 { font-family: 'Playfair Display', serif; color: var(--blood-red); font-size: 3rem; margin-bottom: 15px; text-transform: uppercase; }
+        .section-title p { font-style: italic; color: #555; font-size: 1.15rem; }
+
+        /* ================= PHẦN 1: MỞ ĐẦU ================= */
+        .part-1 { padding: 80px 0 40px 0; }
+
+        /* ================= PHẦN 2: 3 TRỤ CỘT ================= */
+        .part-2 { 
+            background-color: #1a1a1a; 
+            padding: 100px 0; 
+            border-top: 4px solid var(--blood-red); 
+            border-bottom: 4px solid var(--blood-red); 
+            box-shadow: inset 0 0 50px rgba(0,0,0,0.9);
+        }
+        .part-2 .section-title h1 { color: var(--gold); text-shadow: 0 2px 15px rgba(255, 215, 0, 0.15); }
+        .part-2 .section-title p { color: #aaa; }
+
+        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; }
+        
+        .dark-card { 
+            background: rgba(255, 255, 255, 0.03); 
+            border: 1px solid rgba(255, 215, 0, 0.2); 
+            padding: 40px 30px; 
+            position: relative;
+            transition: 0.4s all ease-out;
+            text-align: center;
+        }
+        .dark-card:hover { 
+            background: rgba(255, 255, 255, 0.08); 
+            border-color: var(--gold); 
+            transform: translateY(-10px); 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .dark-card .icon-number { 
+            font-family: 'Playfair Display', serif; 
+            font-size: 4rem; 
+            font-weight: 900; 
+            color: rgba(255, 215, 0, 0.15); 
+            position: absolute; 
+            top: 10px; 
+            left: 20px; 
+            line-height: 1;
+            transition: 0.4s;
+        }
+        .dark-card:hover .icon-number { color: rgba(255, 215, 0, 0.4); }
+        .dark-card h3 { font-family: 'Playfair Display', serif; color: var(--gold); font-size: 1.6rem; margin-bottom: 20px; position: relative; z-index: 2; text-transform: uppercase; letter-spacing: 1px; }
+        .dark-card p { color: #ccc; line-height: 1.8; text-align: justify; position: relative; z-index: 2; font-size: 0.95rem; }
+
+        /* ================= PHẦN 3: NHẬN ĐỊNH ================= */
+        .part-3 { padding: 100px 0; }
+        
+        .opinion-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .quote-card {
+            background: rgba(255, 255, 255, 0.7);
+            border-left: 8px solid var(--blood-red);
+            padding: 40px 50px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            position: relative;
+        }
+        .quote-card::before {
+            content: "“";
+            font-family: 'Playfair Display', serif;
+            font-size: 6rem;
+            color: rgba(139, 0, 0, 0.1);
+            position: absolute;
+            top: -10px;
+            left: 20px;
+            line-height: 1;
+        }
+        .quote-card h2 { font-family: 'Playfair Display', serif; color: var(--blood-red); font-size: 1.8rem; margin-bottom: 20px; }
+        .quote-card p { font-size: 1.15rem; line-height: 1.9; color: #1a1a1a; text-align: justify; position: relative; z-index: 2; }
+        
+        /* Đúc kết của nhóm */
+        .group-card {
+            background: var(--blood-red);
+            color: #f4ebd8;
+            border-left: none;
+            border-right: 8px solid var(--gold);
+            text-align: right;
+            box-shadow: 0 15px 40px rgba(139, 0, 0, 0.3);
+        }
+        .group-card::before { display: none; }
+        .group-card h2 { color: var(--gold); }
+        .group-card p { color: #f4ebd8; text-align: right; }
+
+        /* HIỆU ỨNG TRƯỢT */
+        .reveal { opacity: 0; transform: translateY(40px); transition: 1s all ease-out; }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+        .delay-1 { transition-delay: 0.2s; }
+
+        footer { background-color: #2b2b2b; color: #f4ebd8; padding: 40px 20px; text-align: center; border-top: 4px solid var(--blood-red); }
+        footer .group-name { font-family: 'Playfair Display', serif; font-weight: bold; font-size: 1.2rem; color: #fff; margin-bottom: 10px; }
+
+        @media (max-width: 900px) {
+            .grid-3 { grid-template-columns: 1fr; }
+            .quote-card { padding: 30px 20px; }
+            .section-title h1 { font-size: 2.2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <nav class="nav-container">
+            <a href="index.html">Trang Chủ</a>
+            <a href="DLCM.html">Đường Lối Cách Mạng</a>
+            <a href="QT.html">Góc Nhìn Quốc Tế</a>
+            <a href="minigame.html">Trò Chơi</a>
+        </nav>
+    </header>
+
+    <section class="part-1">
+        <div class="container">
+            <div class="section-title reveal">
+                <h1>TÂM ĐIỂM THỜI ĐẠI</h1>
+                <p>Cuộc chiến tại Việt Nam không nằm ngoài dòng chảy của thế giới, mà chính nó đã làm thay đổi cả thế giới.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="part-2">
+        <div class="container">
+            <div class="section-title reveal">
+                <h1>BỨC TRANH TOÀN CẦU</h1>
+                <p>3 yếu tố quốc tế then chốt làm nên chiến thắng vĩ đại</p>
+            </div>
+
+            <div class="grid-3">
+                <div class="dark-card reveal">
+                    <div class="icon-number">01</div>
+                    <h3>Tiền đồn XHCN</h3>
+                    <p>Việt Nam được xem là "tiền đồn" vững chắc bảo vệ hệ thống Xã hội Chủ nghĩa. Nhờ đường lối ngoại giao đúng đắn, cuộc kháng chiến đã nhận được sự chi viện vô tư, to lớn cả về vũ khí, khí tài lẫn chuyên gia từ Liên Xô, Trung Quốc và các nước anh em.</p>
+                </div>
+                
+                <div class="dark-card reveal delay-1">
+                    <div class="icon-number">02</div>
+                    <h3>Lương tri nhân loại</h3>
+                    <p>Chưa từng có một cuộc chiến nào mà phong trào phản chiến lại bùng nổ mạnh mẽ ngay tại lòng nước Mỹ và lan rộng khắp các nước tư bản. Sự tàn bạo của bom đạn đã thức tỉnh lương tri toàn cầu, biến cuộc đấu tranh của Việt Nam thành biểu tượng của công lý.</p>
+                </div>
+
+                <div class="dark-card reveal delay-2">
+                    <div class="icon-number">03</div>
+                    <h3>Cổ vũ Độc lập</h3>
+                    <p>Chiến thắng của một dân tộc nhỏ bé trước cường quốc quân sự số 1 thế giới đã đánh sập huyền thoại "bất khả chiến bại" của đế quốc. Nó trở thành ngọn cờ đầu, trực tiếp cổ vũ phong trào giải phóng dân tộc bão táp tại châu Á, châu Phi và Mỹ-Latinh.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="part-3">
+        <div class="container">
+            <div class="section-title reveal">
+                <h1>ĐÁNH GIÁ & NHẬN ĐỊNH</h1>
+            </div>
+
+            <div class="opinion-grid">
+                
+                <div class="quote-card reveal">
+                    <h2>Nhận định từ Giáo trình (VNR202)</h2>
+                    <p style="font-style: italic;">
+                        "Thắng lợi của nhân dân ta trong cuộc kháng chiến chống Mỹ, cứu nước là một trong những chiến công vĩ đại nhất của thế kỷ XX, là một sự kiện có tầm quan trọng quốc tế to lớn và có tính thời đại sâu sắc. Thắng lợi đó đã làm phá sản các chiến lược chiến tranh xâm lược của đế quốc Mỹ, làm suy yếu trận địa của chủ nghĩa đế quốc, phá vỡ một phòng tuyến quan trọng của chúng ở khu vực Đông Nam Á, mở ra sự sụp đổ của chủ nghĩa thực dân mới, cổ vũ mạnh mẽ phong trào đấu tranh vì hòa bình, độc lập dân tộc, dân chủ và chủ nghĩa xã hội trên thế giới."
+                    </p>
+                </div>
+                
+                <div class="quote-card group-card reveal delay-1">
+                    <h2>Góc nhìn của Group T1</h2>
+                    <p>
+                        Bản chất của cuộc kháng chiến chống Mỹ cứu nước không bao giờ chỉ là cuộc chiến của riêng dân tộc Việt Nam. Nơi đây là điểm hội tụ của những mâu thuẫn gay gắt nhất thời đại. Việt Nam đã đứng ở đầu sóng ngọn gió, không chỉ chiến đấu vì sự sinh tồn của chính mình, mà còn gánh vác một sứ mệnh quốc tế cao cả, bảo vệ quyền sống và phẩm giá của mọi dân tộc bị áp bức trên toàn thế giới.
+                    </p>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p class="group-name">Sản phẩm sáng tạo môn VNR202 - Group T1</p>
+        <p>Giảng viên: <strong>Nguyễn Văn Bình</strong></p>
+        <p style="font-size: 0.8rem; margin-top: 15px; opacity: 0.6; font-family: 'Be Vietnam Pro';">© 2026 - Đại học FPT</p>
+    </footer>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const reveals = document.querySelectorAll(".reveal");
+            function revealOnScroll() {
+                const windowHeight = window.innerHeight;
+                reveals.forEach((reveal) => {
+                    const rect = reveal.getBoundingClientRect();
+                    if (rect.top < windowHeight - 80) reveal.classList.add("active");
+                });
+            }
+            window.addEventListener("scroll", revealOnScroll);
+            revealOnScroll();
+        });
+    </script>
+</body>
+</html>
