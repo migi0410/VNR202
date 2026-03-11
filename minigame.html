@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minigame: Giải mã Lịch sử</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Lora:ital,wght@0,400;0,600;1,400&family=Be+Vietnam+Pro:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        /* === RESET & CHUNG === */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root { --blood-red: #8b0000; --blood-red-light: #b71c1c; --gold: #ffd700; }
+        body { background-color: #f4ebd8; color: #2b2b2b; font-family: 'Lora', serif; overflow-x: hidden; }
+        
+        body::before { content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-image: url('https://www.transparenttextures.com/patterns/rice-paper-2.png'); opacity: 0.8; z-index: 998; pointer-events: none; }
+
+        /* HEADER */
+        header { background-color: rgba(139, 0, 0, 0.95); padding: 15px 0; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.3); }
+        .nav-container { max-width: 1100px; margin: 0 auto; display: flex; justify-content: center; gap: 30px; }
+        .nav-container a { color: #f4ebd8; text-decoration: none; font-family: 'Be Vietnam Pro', sans-serif; font-weight: 700; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 1px; transition: 0.3s; }
+        .nav-container a:hover { color: #fff; text-shadow: 0 0 8px rgba(255,255,255,0.5); }
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
+        .section-title { text-align: center; margin-bottom: 40px; }
+        .section-title h1 { font-family: 'Playfair Display', serif; color: var(--blood-red); font-size: 3rem; margin-bottom: 10px; text-transform: uppercase; }
+        .section-title p { font-style: italic; color: #555; font-size: 1.1rem; }
+
+        /* === BỐ CỤC GAME === */
+        .game-wrapper {
+            display: flex;
+            gap: 40px;
+            align-items: stretch;
+            justify-content: center;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .left-panel { flex: 1; display: flex; flex-direction: column; gap: 20px; max-width: 550px; }
+        .right-panel { flex: 1; display: flex; flex-direction: column; }
+
+        /* 1. BẢNG MẢNH GHÉP (10 MẢNH) */
+        .puzzle-board {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 4/3;
+            border: 6px solid var(--blood-red);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+            background-image: url('game.jpg');
+            background-size: cover;
+            background-position: center;
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            grid-template-rows: repeat(2, 1fr);
+            gap: 1px;
+            background-color: var(--gold);
+        }
+
+        .piece {
+            background-color: var(--blood-red);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--gold);
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            font-weight: 900;
+            transition: all 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+            z-index: 2;
+            cursor: default;
+        }
+
+        .piece.hidden { opacity: 0; transform: scale(0.3) rotate(15deg); pointer-events: none; }
+
+        /* 2. KHU VỰC ĐOÁN TỪ KHÓA */
+        .keyword-box {
+            background: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border: 2px dashed var(--blood-red);
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        .keyword-box h3 { font-family: 'Be Vietnam Pro'; color: var(--blood-red); margin-bottom: 10px; font-size: 1.1rem; text-transform: uppercase; }
+        .keyword-box input {
+            width: 80%; padding: 10px; margin-bottom: 10px;
+            border: 1px solid #ccc; border-radius: 4px;
+            font-family: 'Be Vietnam Pro'; font-size: 1rem; text-align: center;
+            text-transform: uppercase; outline: none;
+        }
+        .keyword-box input:focus { border-color: var(--blood-red); }
+        .keyword-box button {
+            background: var(--blood-red); color: #fff; border: none;
+            padding: 10px 20px; font-family: 'Be Vietnam Pro'; font-weight: bold;
+            cursor: pointer; transition: 0.3s; border-radius: 4px; text-transform: uppercase;
+        }
+        .keyword-box button:hover { background: var(--blood-red-light); }
+        .hint-text { font-size: 0.85rem; color: #555; margin-top: 10px; font-style: italic; }
+
+        /* 3. KHU VỰC TRẮC NGHIỆM */
+        .quiz-section {
+            background: rgba(255, 255, 255, 0.85);
+            padding: 30px;
+            border-top: 5px solid var(--blood-red);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+            height: 100%;
+            display: flex; flex-direction: column;
+            position: relative;
+        }
+        
+        .progress-text { font-family: 'Be Vietnam Pro', sans-serif; font-weight: bold; color: #555; text-transform: uppercase; font-size: 0.85rem; margin-bottom: 15px; letter-spacing: 1px; display: flex; justify-content: space-between;}
+        
+        #question-text { font-size: 1.15rem; font-weight: 600; color: var(--blood-red); margin-bottom: 25px; line-height: 1.6; min-height: 80px; }
+
+        .options { display: flex; flex-direction: column; gap: 10px; }
+        
+        .option-btn {
+            background: transparent; border: 2px solid var(--blood-red-light);
+            padding: 12px 20px; font-family: 'Be Vietnam Pro', sans-serif; font-size: 0.95rem;
+            color: #2b2b2b; text-align: left; cursor: pointer; transition: 0.3s; border-radius: 4px;
+        }
+        .option-btn:hover { background: rgba(183, 28, 28, 0.1); }
+        
+        .option-btn.correct { background: #27ae60 !important; border-color: #27ae60 !important; color: #fff !important; }
+        .option-btn.wrong { background: #c0392b !important; border-color: #c0392b !important; color: #fff !important; animation: shake 0.4s; }
+
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+
+        /* 4. POPUP TRẢ LỜI SAI XỊN XÒ */
+        #custom-popup-overlay {
+            display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255,255,255,0.7); backdrop-filter: blur(3px); z-index: 10;
+        }
+        #custom-popup {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            background: #fff; padding: 30px; border-top: 5px solid var(--blood-red);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2); text-align: center; width: 90%; max-width: 350px;
+            border-radius: 5px; animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        #custom-popup h3 { color: var(--blood-red); font-family: 'Playfair Display'; margin-bottom: 10px; font-size: 1.5rem; }
+        #custom-popup p { font-size: 0.95rem; color: #555; margin-bottom: 20px; }
+        #custom-popup button {
+            background: var(--blood-red); color: white; border: none; padding: 10px 25px;
+            font-family: 'Be Vietnam Pro'; font-weight: bold; cursor: pointer; border-radius: 4px; transition: 0.3s;
+        }
+        #custom-popup button:hover { background: var(--blood-red-light); }
+        @keyframes popIn { from { transform: translate(-50%, -40%); opacity: 0; } to { transform: translate(-50%, -50%); opacity: 1; } }
+
+        /* 5. THÔNG BÁO HOÀN THÀNH / THẤT BẠI */
+        #success-message {
+            display: none; margin-top: auto; padding: 30px 20px;
+            background: rgba(255, 215, 0, 0.2); border-left: 5px solid var(--blood-red);
+            animation: fadeIn 1s forwards; text-align: center;
+        }
+        #success-message h3 { color: var(--blood-red); font-family: 'Playfair Display', serif; font-size: 2rem; margin-bottom: 15px; text-transform: uppercase;}
+        #success-message p { font-size: 1.05rem; line-height: 1.7; color: #333;}
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        footer { background-color: #2b2b2b; color: #f4ebd8; padding: 40px 20px; text-align: center; border-top: 4px solid var(--blood-red); margin-top: 80px; }
+
+        @media (max-width: 900px) {
+            .game-wrapper { flex-direction: column; align-items: center; }
+            .left-panel, .right-panel { width: 100%; max-width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <nav class="nav-container">
+            <a href="index.html" >Trang Chủ</a>
+            <a href="DLCM.html">Đường Lối</a>
+            <a href="QT.html">Quốc Tế</a>
+            <a href="minigame.html" style="color: #ffd700; border-bottom: 2px solid #ffd700;">Minigame</a>
+            <a href="tailieu.html">Ôn Tập</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        <div class="section-title">
+            <h1>GIẢI MÃ LỊCH SỬ</h1>
+            <p>Trả lời đúng để lật mở bức ảnh (sai sẽ chuyển câu). Bạn cũng có thể đoán ngay <strong>TỪ KHÓA BÍ MẬT</strong> để thắng lập tức!</p>
+        </div>
+
+        <div class="game-wrapper">
+            <div class="left-panel">
+                <div class="puzzle-board" id="puzzle-board">
+                    </div>
+
+                <div class="keyword-box">
+                    <h3>🔑 TỪ KHÓA BÍ MẬT</h3>
+                    <input type="text" id="keyword-input" placeholder="Nhập câu trả lời của bạn..." autocomplete="off">
+                    <button onclick="checkKeyword()">ĐOÁN TỪ KHÓA</button>
+                    <p class="hint-text">Gợi ý: Cụm từ gồm 15 chữ cái. Tên gọi chung cho thắng lợi vĩ đại kết thúc 21 năm kháng chiến chống Mỹ.</p>
+                </div>
+            </div>
+
+            <div class="right-panel">
+                <div class="quiz-section" id="quiz-container-main">
+                    
+                    <div id="quiz-block">
+                        <div class="progress-text">
+                            <span id="progress-text">Đã mở: 0/10 mảnh | Câu: 1</span>
+                            <span style="color: var(--blood-red);">Môn: VNR202</span>
+                        </div>
+                        <div id="question-text">Đang tải câu hỏi...</div>
+                        <div class="options" id="options-container">
+                            </div>
+                    </div>
+
+                    <div id="custom-popup-overlay">
+                        <div id="custom-popup">
+                            <h3>Chưa chính xác!</h3>
+                            <p>Đáp án bạn chọn chưa đúng. Đừng lo, chúng ta sẽ chuyển sang câu hỏi tiếp theo nhé!</p>
+                            <button onclick="nextQuestionAfterWrong()">TIẾP TỤC</button>
+                        </div>
+                    </div>
+
+                    <div id="success-message">
+                        <h3 id="end-title">ĐẠI THẮNG MÙA XUÂN 1975</h3>
+                        <p id="end-desc">Bạn đã giải mã thành công! Hình ảnh chiếc xe tăng 390 húc tung cổng chính Dinh Độc Lập trưa ngày 30/04/1975 là biểu tượng tự hào nhất, đánh dấu sự sụp đổ hoàn toàn của chính quyền Sài Gòn, thống nhất non sông đất nước!</p>
+                        <button onclick="location.reload()" style="margin-top: 20px; padding: 10px 20px; background: var(--blood-red); color: white; border: none; cursor: pointer; border-radius: 4px; font-weight: bold; font-family: 'Be Vietnam Pro';">CHƠI LẠI</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p style="font-family: 'Playfair Display'; font-weight: bold; font-size: 1.2rem; color: #fff; margin-bottom: 10px;">Sản phẩm sáng tạo môn VNR202 - Group T1</p>
+        <p>Giảng viên: <strong>Nguyễn Văn Bình</strong></p>
+        <p style="font-size: 0.8rem; margin-top: 15px; opacity: 0.6; font-family: 'Be Vietnam Pro';">© 2026 - Đại học FPT</p>
+    </footer>
+
+    <script>
+        // 1. NGÂN HÀNG CÂU HỎI (Đã nhập 10 câu của bạn + 10 câu hệ thống)
+        let questions = [
+            { q: "Vào năm 1965, đế quốc Mỹ đã chuyển sang thực hiện chiến lược chiến tranh nào tại miền Nam Việt Nam?", options: ["A. Chiến tranh đặc biệt", "B. Chiến tranh cục bộ", "C. Chiến tranh tổng lực", "D. Việt Nam hoá chiến tranh"], answer: 1 },
+            { q: "Phương châm chiến lược 'đánh lâu dài' trong kháng chiến chống Mỹ dựa trên nguyên tắc chủ đạo nào?", options: ["A. Chỉ tập trung vào chiến tranh du kích", "B. Dựa vào sự giúp đỡ của quốc tế", "C. Vừa đánh vừa đám phán từ đầu", "D. Dựa vào sức mình là chính"], answer: 3 },
+            { q: "Tư tưởng chỉ đạo đối với miền Nam trong giai đoạn 1965 - 1975 là gì?", options: ["A. Rút lui chiến lược bảo toàn lực lượng", "B. Giữ vững và phát triển thế tiến công", "C. Chỉ tập trung đấu tranh chính trị", "D. Phòng thủ kiên cố chờ thời cơ"], answer: 1 },
+            { q: "Trong chiến lược đối với miền Bắc, nhiệm vụ nào được đặt ra để đối phó với chiến tranh phá hoại?", options: ["A. Dừng hoàn toàn việc xây dựng kinh tế", "B. Tiến hành cuộc chiến tranh nhân dân chống phá hoại", "C. Sơ tán toàn bộ dân cư sang các nước láng giềng", "D. Chỉ tập trung vào phòng thủ biên giới"], answer: 1 },
+            { q: "Mối quan hệ giữa hai miền Nam - Bắc được xác định như thế nào trong khẩu hiệu chung?", options: ["A. Miền Bắc chỉ đóng vai trò hỗ trợ ngoại giao", "B. Miền Nam và miền Bắc là hai thực thể độc lập", "C. Miền Nam phụ thuộc hoàn toàn vào miền Bắc", "D. Miền Nam là tiền tuyến lớn, miền Bắc là hậu phương lớn"], answer: 3 },
+            { q: "Tại sao việc bảo vệ miền Bắc xã hội chủ nghĩa lại được coi là nhiệm vụ của nhân dân cả nước?", options: ["A. Vì miền Bắc là nơi đặt trụ sở của các tổ chức quốc tế", "B. Vì miền Bắc là thành quả chung và là hậu phương vững chắc", "C. Vì Mỹ tập trung tấn công miền Bắc", "D. Vì miền Bắc có địa hình hiểm trở hơn miền Nam"], answer: 1 },
+            { q: "Cuộc kháng chiến chống Mỹ của Việt Nam được khẳng định mang tính chất gì trong thế kỷ XX?", options: ["A. Cuộc xung đột tôn giáo kéo dài", "B. Một cuộc nội chiến cục bộ giữa các phe phái", "C. Cuộc chiến tranh biên giới thông thường", "D. Tâm điểm của cuộc đấu tranh vì độc lập và tiến bộ nhân loại"], answer: 3 },
+            { q: "Thắng lợi của Việt Nam đã có tác động như thế nào đến chủ nghĩa thực dân mới trên toàn cầu?", options: ["A. Khiến Mỹ mở rộng thêm nhiều phòng tuyến khác ở Đông Nam Á", "B. Mở ra sự sụp đổ của chủ nghĩa thực dân mới trên toàn cầu", "C. Làm cho chủ nghĩa thực dân mới trở nên mạnh mẽ", "D. Không gây ra bất kỳ ảnh hưởng nào"], answer: 1 },
+            { q: "Khẩu hiệu chung của nhân dân cả nước trong thời kỳ kháng chiến chống Mỹ sau 1965 là gì?", options: ["A. Sản xuất là trên hết", "B. Tất cả để đánh thắng giặc Mỹ xâm lược", "C. Đoàn kết, đoàn kết, đại đoàn kết", "D. Hoà bình, trung lập và thống nhất"], answer: 1 },
+            { q: "Theo nguồn tài liệu, miền Bắc đóng vai trò là 'hậu phương lớn' vì lý do nào sau đây?", options: ["A. Vì miền Bắc có diện tích lớn hơn miền Nam", "B. Vì miền Bắc cung cấp sức người và lương thực ở mức cao nhất cho miền Nam", "C. Vì tất cả các trận đánh đều diễn ra tại miền Bắc", "D. Vì miền Bắc không bị chiến tranh tác động"], answer: 1 },
+            
+            // 10 câu bổ sung để đủ bộ 20
+            { q: "Trận 'Điện Biên Phủ trên không' (1972) đã đập tan uy thế của loại vũ khí chiến lược nào của Mỹ?", options: ["A. Máy bay tiêm kích F-111", "B. Tàu sân bay", "C. Máy bay ném bom B-52", "D. Tên lửa hành trình"], answer: 2 },
+            { q: "Điều khoản nào trong Hiệp định Paris (1973) tạo ra bước ngoặt có lợi nhất cho cách mạng Việt Nam?", options: ["A. Mỹ bồi thường chiến tranh", "B. Mỹ rút toàn bộ quân viễn chinh và đồng minh", "C. Mỹ công nhận chính phủ cách mạng", "D. Phân chia lại ranh giới"], answer: 1 },
+            { q: "Hội nghị Trung ương 21 (7/1973) khẳng định con đường phát triển của cách mạng miền Nam là gì?", options: ["A. Đấu tranh chính trị hòa bình", "B. Đấu tranh ngoại giao", "C. Bạo lực cách mạng", "D. Khởi nghĩa từng phần"], answer: 2 },
+            { q: "Tỉnh đầu tiên của miền Nam được giải phóng hoàn toàn (ngày 6/1/1975) là tỉnh nào?", options: ["A. Phước Long", "B. Bình Long", "C. Buôn Ma Thuột", "D. Tây Ninh"], answer: 0 },
+            { q: "Tuyến đường vận tải chiến lược Bắc - Nam mang tên Bác còn được gọi là gì?", options: ["A. Đường mòn trên biển", "B. Đường Trường Sơn (Đường 559)", "C. Quốc lộ 1A", "D. Đường Xuyên Á"], answer: 1 },
+            { q: "Chiến dịch nào đã mở màn cho cuộc Tổng tiến công và nổi dậy Xuân 1975?", options: ["A. Chiến dịch Huế - Đà Nẵng", "B. Chiến dịch Hồ Chí Minh", "C. Chiến dịch Phước Long", "D. Chiến dịch Tây Nguyên"], answer: 3 },
+            { q: "Chiến dịch tiến công cuối cùng giải phóng Sài Gòn - Gia Định mang tên là gì?", options: ["A. Chiến dịch giải phóng Sài Gòn", "B. Chiến dịch Mùa Xuân", "C. Chiến dịch Hồ Chí Minh", "D. Chiến dịch rợp cờ đỏ"], answer: 2 },
+            { q: "Trong chiến lược 'Việt Nam hóa chiến tranh', quân đội Mỹ giữ vai trò gì?", options: ["A. Rút lui hoàn toàn", "B. Trực tiếp tham chiến trên bộ", "C. Chỉ làm cố vấn", "D. Hỗ trợ hỏa lực và hậu cần"], answer: 3 },
+            { q: "Ai là người cắm lá cờ đầu tiên trên nóc Dinh Độc Lập vào trưa 30/4/1975?", options: ["A. Vũ Đăng Toàn", "B. Bùi Quang Thận", "C. Lê Văn Phượng", "D. Thái Bá Minh"], answer: 1 },
+            { q: "Thắng lợi nào của ta đã đánh bại hoàn toàn chiến lược 'Chiến tranh đơn phương' của Mỹ?", options: ["A. Phong trào Đồng Khởi", "B. Trận Ấp Bắc", "C. Trận Bình Giã", "D. Tổng tiến công Mậu Thân"], answer: 0 }
+        ];
+
+        // Trộn ngẫu nhiên
+        questions = questions.sort(() => Math.random() - 0.5);
+
+        let currentQIndex = 0;
+        let correctCount = 0;
+        let canClick = true;
+
+        const questionText = document.getElementById("question-text");
+        const optionsContainer = document.getElementById("options-container");
+        const progressText = document.getElementById("progress-text");
+        const quizBlock = document.getElementById("quiz-block");
+        const successMessage = document.getElementById("success-message");
+        const endTitle = document.getElementById("end-title");
+        const endDesc = document.getElementById("end-desc");
+        const popupOverlay = document.getElementById("custom-popup-overlay");
+
+        document.addEventListener("DOMContentLoaded", function() {
+            // TẠO 10 MẢNH GHÉP
+            const board = document.getElementById("puzzle-board");
+            for (let i = 1; i <= 10; i++) {
+                let piece = document.createElement("div");
+                piece.classList.add("piece");
+                piece.id = `piece-${i}`;
+                piece.innerText = i;
+                board.appendChild(piece);
+            }
+            loadQuestion();
+        });
+
+        function loadQuestion() {
+            if(correctCount >= 10) return;
+
+            if(currentQIndex >= questions.length) {
+                quizBlock.style.display = "none";
+                successMessage.style.display = "block";
+                endTitle.innerText = "HẾT CÂU HỎI!";
+                endTitle.style.color = "#b71c1c";
+                endDesc.innerText = `Bạn chỉ mới mở được ${correctCount}/10 mảnh ghép và đã cạn kiệt ngân hàng câu hỏi. Hãy ôn lại bài và thử lại nhé!`;
+                return;
+            }
+
+            canClick = true;
+            const currentQ = questions[currentQIndex];
+            progressText.innerHTML = `Đã mở: <strong>${correctCount}/10</strong> mảnh &nbsp; | &nbsp; Câu: ${currentQIndex + 1}/20`;
+            questionText.innerText = currentQ.q;
+            
+            optionsContainer.innerHTML = ""; 
+            
+            currentQ.options.forEach((opt, index) => {
+                const btn = document.createElement("button");
+                btn.classList.add("option-btn");
+                btn.innerText = opt;
+                btn.onclick = () => checkAnswer(index, btn);
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function checkAnswer(selectedIndex, btnElement) {
+            if (!canClick) return;
+            canClick = false;
+
+            const currentQ = questions[currentQIndex];
+            const allButtons = optionsContainer.querySelectorAll(".option-btn");
+
+            if (selectedIndex === currentQ.answer) {
+                btnElement.classList.add("correct");
+                correctCount++; 
+                
+                const piece = document.getElementById(`piece-${correctCount}`);
+                if(piece) piece.classList.add("hidden");
+
+                setTimeout(() => {
+                    currentQIndex++;
+                    if (correctCount === 10) {
+                        quizBlock.style.display = "none";
+                        successMessage.style.display = "block";
+                    } else {
+                        loadQuestion();
+                    }
+                }, 1000);
+
+            } else {
+                btnElement.classList.add("wrong");
+                allButtons[currentQ.answer].classList.add("correct");
+                
+                // Hiện Popup báo sai thay vì dùng alert()
+                setTimeout(() => {
+                    popupOverlay.style.display = "block";
+                }, 800);
+            }
+        }
+
+        // Hàm được gọi khi người dùng bấm "TIẾP TỤC" ở Popup
+        function nextQuestionAfterWrong() {
+            popupOverlay.style.display = "none";
+            currentQIndex++; 
+            loadQuestion();  
+        }
+
+        // LOGIC ĐOÁN TỪ KHÓA
+        function removeAccents(str) {
+            return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/đ/g, "d").replace(/Đ/g, "D");
+        }
+
+        function checkKeyword() {
+            const inputVal = document.getElementById("keyword-input").value;
+            const normalizedInput = removeAccents(inputVal.toLowerCase().replace(/\s/g, ''));
+            const targetKeyword = removeAccents("Đại thắng mùa xuân".toLowerCase().replace(/\s/g, ''));
+
+            if (normalizedInput === targetKeyword) {
+                const pieces = document.querySelectorAll(".piece");
+                pieces.forEach(p => p.classList.add("hidden"));
+
+                document.getElementById("quiz-block").style.display = "none";
+                document.getElementById("success-message").style.display = "block";
+                
+                document.getElementById("keyword-input").value = "ĐẠI THẮNG MÙA XUÂN";
+                document.getElementById("keyword-input").style.backgroundColor = "#e8f8f5";
+                document.getElementById("keyword-input").style.borderColor = "#27ae60";
+                document.getElementById("keyword-input").style.color = "#27ae60";
+                document.getElementById("keyword-input").style.fontWeight = "bold";
+                document.getElementById("keyword-input").disabled = true;
+            } else {
+                // Tái sử dụng giao diện popup cho báo sai từ khóa (thay nội dung JS một chút)
+                document.querySelector("#custom-popup h3").innerText = "Chưa đúng từ khóa!";
+                document.querySelector("#custom-popup p").innerText = "Gợi ý: Gồm 15 chữ cái, bắt đầu bằng chữ Đ. Hãy thử lại nhé.";
+                document.querySelector("#custom-popup button").onclick = () => { popupOverlay.style.display = "none"; };
+                popupOverlay.style.display = "block";
+                
+                // Trả lại chức năng cũ cho nút "Tiếp tục" khi làm trắc nghiệm
+                setTimeout(() => {
+                    document.querySelector("#custom-popup h3").innerText = "Chưa chính xác!";
+                    document.querySelector("#custom-popup p").innerText = "Đáp án bạn chọn chưa đúng. Đừng lo, chúng ta sẽ chuyển sang câu hỏi tiếp theo nhé!";
+                    document.querySelector("#custom-popup button").onclick = nextQuestionAfterWrong;
+                }, 500);
+            }
+        }
+    </script>
+</body>
+</html>

@@ -238,9 +238,9 @@
 </head>
 <body>
 
-    <audio id="planeAudio" src="plane_sound.mp3"></audio>
-    <audio id="rocketAudio" src="rocket_sound.mp3"></audio>
-    <audio id="warAudio" src="war_sound.wav" loop></audio>
+    <audio id="planeAudio" src="assets\sounds\plane_sound.mp3"></audio>
+    <audio id="rocketAudio" src="assets\sounds\rocket_sound.mp3"></audio>
+    <audio id="warAudio" src="assets\sounds\war_sound.wav" loop></audio>
 
     <div id="intro-overlay">
         <h2>Sẵn sàng trải nghiệm?</h2>
@@ -249,10 +249,11 @@
 
     <header>
         <nav class="nav-container">
-            <a href="index.html">Trang Chủ</a>
-            <a href="DLCM.html">Đường Lối Cách Mạng</a>
-            <a href="QT.html">Góc Nhìn Quốc Tế</a>
-            <a href="minigame.html">Trò Chơi</a>
+            <a href="index.html" style="color: #ffd700; border-bottom: 2px solid #ffd700;">Trang Chủ</a>
+            <a href="DLCM.html">Đường Lối</a>
+            <a href="QT.html">Quốc Tế</a>
+            <a href="minigame.html">Minigame</a>
+            <a href="tailieu.html">Ôn Tập</a>
         </nav>
     </header>
 
@@ -289,7 +290,7 @@
         <div class="quote-box">
             <p>"Nhiều học giả phương Tây gọi đây là “Chiến tranh Việt Nam” (Vietnam War). Song, lịch sử cũng chứng minh đó là tâm điểm của phong trào đấu tranh vì hòa bình và độc lập của nhân loại tiến bộ."</p>
         </div>
-        <h2>VẬY BẢN CHẤT CỦA CUỘC CHIẾN NÀY LÀ GÌ?</h2>
+        <h2 style="margin-bottom: 30px;">VẬY BẢN CHẤT CỦA CUỘC CHIẾN NÀY LÀ GÌ?</h2>
         
         <div class="btn-group">
             <a href="DLCM.html" class="btn btn-local">Đường lối Cách Mạng (Trong nước)</a>
@@ -314,6 +315,13 @@
             startBtn.addEventListener("click", function() {
                 overlay.style.opacity = "0";
                 setTimeout(() => { overlay.style.visibility = "hidden"; }, 1500);
+                
+                // GIẢM ÂM LƯỢNG TẠI ĐÂY (Giá trị từ 0.0 đến 1.0)
+                planeSound.volume = 0.2;  // Máy bay: 20% âm lượng
+                rocketSound.volume = 0.2; // Bom nổ: 20% âm lượng
+                warSound.volume = 0.15;   // Âm thanh nền: 15% âm lượng
+
+                // Play sounds
                 planeSound.play();
                 rocketSound.play();
                 warSound.volume = 0.5; 
